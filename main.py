@@ -1,5 +1,7 @@
 from datetime import timedelta
 from flask import Flask, session
+from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from redis import Redis
@@ -30,10 +32,18 @@ rs = Redis(host=Config.REDIS_HOST,port=Config.REDIS_PORT)
 #初始化session存储对象
 Session(app)
 
+#创建管理器
+mgr = Manager(app)
+#初始化迁移器
+Migrate(app,db)
+#使用管理器生成迁移命令
+mgr.add_command('mc',MigrateCommand)
+
+
 @app.route('/index')
 def index():
     session['name'] = 'lisi'
     return '首页'
 
 if __name__ == '__main__':
-    app.run()
+    mgr.run()
