@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from redis import Redis
 
 from config import  config_dict
+from info.home import home_blu
 
 
 def create_app(config_type):
@@ -26,5 +27,7 @@ def create_app(config_type):
     Session(app)
     #初始化迁移器
     Migrate(app,db)
-
+    #注册蓝图对象
+    from info.home import home_blu
+    app.register_blueprint(home_blu)
     return app
