@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from redis import Redis
 
 from config import  config_dict
-from info.home import home_blu
+from info.modules.home import home_blu
 
 #定义一个全局变量,记录数据库连接对象以便其他文件可以使用
 db = None
@@ -37,13 +37,13 @@ def create_app(config_type):
     #初始化迁移器
     Migrate(app,db)
     #注册蓝图对象
-    from info.home import home_blu
+    from info.modules.home import home_blu
     app.register_blueprint(home_blu)
-    from info.passport import passport_blu
+    from info.modules.passport import passport_blu
     app.register_blueprint(passport_blu)
 
     #项目关联模型文件 import * 语法不能在函数/方法中使用
-    from info import models
+    from info.utils import models
     # import info.models  #这个也可以
 
     #配置日志

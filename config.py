@@ -14,6 +14,8 @@ class Config:
     SESSION_USE_SIGNER = True #设置sessionid进行加密
     SECRET_KEY = 'test'#设置sessionid秘钥
     PERMANENT_SESSION_LIFETIME = timedelta(days=7)
+    SQLALCHEMY_COMMIT_ON_TEARDOWN = True #设置数据库自动提交(在请求结束后,会自动提交)
+
 
 #配置信息子类化
 class DevelopmentConfig(Config): # 开发环境

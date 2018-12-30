@@ -1,7 +1,8 @@
+
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-
-from info import constants, db
+from info import db
+from info.utils import constants
 
 
 # 表基类    为每个表添加共同的字段: 记录的创建时间与更新时间
@@ -55,6 +56,14 @@ class User(BaseModel, db.Model):
     def password(self,value):
         #封装加密过程
         self.password_hash = generate_password_hash(value)
+
+    def check_password(self,password):
+        """
+        校验密码
+        :param password:用户输入的明文
+        :return: True表示校验成功
+        """
+        return check_password_hash(self.password_hash,password)
 
     def to_dict(self):  # 将模型中的数据转存到了字典中, 并且封装了数据的判断和格式转换
         resp_dict = {
