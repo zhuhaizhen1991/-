@@ -1,14 +1,12 @@
 import logging
 from logging.handlers import RotatingFileHandler
-
 from flask import Flask
 from flask_migrate import Migrate
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from redis import Redis
-
 from config import  config_dict
-from info.modules.home import home_blu
+
 
 #定义一个全局变量,记录数据库连接对象以便其他文件可以使用
 db = None
