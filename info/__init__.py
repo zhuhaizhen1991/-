@@ -9,6 +9,8 @@ from config import  config_dict
 
 
 #定义一个全局变量,记录数据库连接对象以便其他文件可以使用
+
+
 db = None
 rs = None
 
@@ -39,6 +41,10 @@ def create_app(config_type):
     app.register_blueprint(home_blu)
     from info.modules.passport import passport_blu
     app.register_blueprint(passport_blu)
+    from info.modules.news import news_blu
+    app.register_blueprint(news_blu)
+    from info.modules.user import user_blu
+    app.register_blueprint(user_blu)
 
     #项目关联模型文件 import * 语法不能在函数/方法中使用
     from info.utils import models
@@ -46,6 +52,10 @@ def create_app(config_type):
 
     #配置日志
     setup_log(config_class.LOGLEVEL)
+
+    #添加过滤器
+    from info.utils.common import func_index_convert
+    app.add_template_filter(func_index_convert,'index_convert')
 
     return app
 

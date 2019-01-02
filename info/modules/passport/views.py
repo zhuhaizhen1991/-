@@ -74,10 +74,12 @@ def get_sms_code():
 
     #生成随机短信验证码
     rand_num = '%04d'% random.randint(0,9999)
+
     #发送短信
     # response_code = CCP().send_template_sms(mobile, [rand_num, 5], 1)
     # if response_code != 0:  # 发送失败
     #     return  jsonify(errno = RET.THIRDERR,errmsg = error_map[RET.THIRDERR])
+
 
     #保存短信验证码  redis 设置过期时间 key:手机号 value:短信验证码
     try:
@@ -166,12 +168,13 @@ def login():
         return  jsonify(errno = RET.PWDERR,errmsg = error_map[RET.PWDERR])
 
     #使用session记录用户的登录状态,记录主键就可以查询出其他的数据
-    session['user.id'] = user.id
+    session['user_id'] = user.id
     # 记录最后登录时间 使用sqlalchemy自动提交机制
     user.last_login = datetime.now()
 
     #json返回数据
     return jsonify(errno = RET.OK,errmsg = error_map[RET.OK])
+
 
 #退出登录
 @passport_blu.route('/logout')
