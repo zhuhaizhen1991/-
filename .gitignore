@@ -2,3 +2,4 @@
 migrations
 py[cod]
 logs/log*
+.qiniu*

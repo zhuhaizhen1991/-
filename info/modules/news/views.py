@@ -3,7 +3,7 @@ from flask import current_app, abort, render_template, g, jsonify, request
 from info import db
 from info.modules.news import news_blu
 from info.utils.common import user_login_data
-from info.utils.models import News, Comment
+from info.utils.models import News, Comment, User
 from info.utils.response_code import RET, error_map
 
 #新闻详情
@@ -48,6 +48,7 @@ def news_detail(news_id):
 
 
     comment_list = []
+
     for comment in comments:
         comment_dict = comment.to_dict()
 
@@ -60,11 +61,16 @@ def news_detail(news_id):
         comment_dict['is_like'] = is_like
         comment_list.append(comment_dict)
 
+    is_followed = False #记录关注情况
+    if news.user and user: #新闻有作者 并且用户已登录
+        #查询作者是否被当前用户关注
+        if news.user in user.followed:
+            is_followed = True
 
-    user = g.user.to_dict() if g.user else None
+    user = user.to_dict() if user else None
 
     #将数据传入模板渲染
-    return  render_template('detail.html',news = news.to_dict(),rank_list = rank_list,user = user,is_collected = is_collected,comments = comment_list)
+    return  render_template('news/detail.html', news = news.to_dict(), rank_list = rank_list, user = user, is_collected = is_collected, comments = comment_list, is_followed = is_followed)
 
 
 #新闻收藏
@@ -103,12 +109,6 @@ def news_collect():
 
     #json返回结果
     return jsonify(errno = RET.OK,errmsg = error_map[RET.OK])
-
-
-
-
-
-
 
 
 
@@ -199,6 +199,39 @@ def comment_like():
     return jsonify(errno = RET.OK,errmsg = error_map[RET.OK])
 
 
+#关注作者
+@news_blu.route('/followed_user',methods=['GET','POST'])
+@user_login_data
+def followed_user():
+    user = g.user
+    if not user:
+        return jsonify(errno = RET.SESSIONERR,errmsg = error_map[RET.SESSIONERR])
+
+    #获取参数
+    action = request.json.get('action')
+    author_id = request.json.get('user_id')
+    #校验参数
+    if not all([action,author_id]):
+        return jsonify(errno = RET.PARAMERR,errmsg = error_map[RET.PARAMERR])
+
+    if action not in ['follow','unfollow']:
+        return jsonify(errno = RET.PARAMERR,errmsg = error_map[RET.PARAMERR])
+    #获取作者数据
+    try:
+        author_id = int(author_id)
+        author = User.query.get(author_id)
+    except Exception as e:
+        current_app.logger(e)
+        return jsonify(errno=RET.PARAMERR, errmsg=error_map[RET.PARAMERR])
+
+    #根据action建立/解除关注关系
+    if action == 'follow':
+        user.followed.append(author)
+    else:
+        user.followed.remove(author)
+
+    #json返回结果
+    return jsonify(errno = RET.OK,errmsg = error_map[RET.OK])
 
 
 

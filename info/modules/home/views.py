@@ -40,7 +40,7 @@ def index():
 
     user = user.to_dict() if user else None
     #将登录数据,排行数据,分类数据,传入模板渲染
-    return render_template('index.html', user=user,rank_list=rank_list,categories = categories)
+    return render_template('news/index.html', user=user, rank_list=rank_list, categories = categories)
 
 
 #设置网站图标(浏览器会自动向网站发起/favicon.ico请求,后端只需要实现该路由,并返回图片即可)
@@ -71,8 +71,8 @@ def get_news_list():
         current_app.lgger.error(e)
         return jsonify(errno = RET.PARAMERR,errmsg = error_map[RET.PARAMERR])
 
-    # 第一种方式:
-    filter_list = []
+    #新闻只显示审核通过的
+    filter_list = [News.status==0]
     if cid != 1: # 不是'最新'
         filter_list.append(News.category_id == cid)
 
