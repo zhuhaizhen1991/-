@@ -1,5 +1,4 @@
 
-
 from info.modules.home import home_blu
 from flask import current_app, render_template, session, request, jsonify, abort
 

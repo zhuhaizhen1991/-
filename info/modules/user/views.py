@@ -85,7 +85,7 @@ def pic_info():
         return jsonify(errno = RET.THIRDERR,errmsg = error_map[RET.THIRDERR])
     #修改头像链接
     user.avatar_url = file_name
-
+    print(file_name)
     #json返回 必须返回头像链接
     return  jsonify(errno = RET.OK,errmsg = error_map[RET.OK],data = user.to_dict())
 

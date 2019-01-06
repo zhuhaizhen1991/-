@@ -4,6 +4,7 @@ from flask import Flask, g, render_template
 from flask_migrate import Migrate
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import CSRFProtect
 from redis import Redis
 from config import  config_dict
 
@@ -64,6 +65,9 @@ def create_app(config_type):
     def error_404(e):
         user = g.user.to_dict() if g.user else None
         return render_template('news/404.html', user=user)
+
+    # 开启CSRF保护 (会对每个post请求进行csrf保护, 校验session和 表单 / X-CSRFToken请求头中的令牌是否一致)
+    CSRFProtect(app)
 
     return app
 

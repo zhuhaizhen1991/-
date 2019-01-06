@@ -21,10 +21,13 @@ class Config:
 class DevelopmentConfig(Config): # 开发环境
     DEBUG = True
     LOGLEVEL = logging.DEBUG  # 设置日志等级
+    WTF_CSRF_ENABLED = False  #关闭CSRF校验
 
 class ProductionConfig(Config): # 生产环境
     DEBUG = False
     LOGLEVEL = logging.ERROR  # 设置日志等级
+    WTF_CSRF_ENABLED = True  # 打开CSRF校验
+
 
 config_dict = {
     'dev':DevelopmentConfig,
